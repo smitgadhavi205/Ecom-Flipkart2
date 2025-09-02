@@ -49,6 +49,7 @@ export function Cart() {
       const address = userProfile?.addresses.find(addr => addr.id === selectedAddress);
       if (!address) {
         toast.error("Selected address not found");
+        setIsCheckingOut(false);
         return;
       }
 
@@ -57,16 +58,34 @@ export function Cart() {
         quantity: item.quantity,
       }));
 
+      // Validate items before creating order
+      if (orderItems.length === 0) {
+        toast.error("No items to order");
+        setIsCheckingOut(false);
+        return;
+      }
+
+      // Remove the 'id' and 'isDefault' fields from the address before sending
+      const { id, isDefault, ...shippingAddress } = address;
+      
       const result = await createOrder({
         items: orderItems,
-        shippingAddress: address,
+        shippingAddress,
         paymentMethod,
       });
 
-      toast.success(`Order created successfully! Order #${result.orderNumber}`);
-      // In a real app, redirect to payment processing
-    } catch (error) {
-      toast.error("Failed to create order");
+      if (result && result.orderNumber) {
+        toast.success(`Order created successfully! Order #${result.orderNumber}`);
+        // Clear cart and stay on the same page instead of redirecting
+        setTimeout(() => {
+          window.location.reload();
+        }, 1500);
+      } else {
+        toast.error("Order was not created properly");
+      }
+    } catch (error: any) {
+      console.error("Order creation error:", error);
+      toast.error(error.message || "Failed to create order. Please try again.");
     } finally {
       setIsCheckingOut(false);
     }

@@ -2,6 +2,39 @@ import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
 import { getAuthUserId } from "@convex-dev/auth/server";
 
+// Function to set a user as admin
+export const setUserAsAdmin = mutation({
+  args: { userId: v.string() },
+  handler: async (ctx, args) => {
+    const adminId = await getAuthUserId(ctx);
+    if (!adminId) throw new Error("Must be logged in");
+    
+    // Check if current user is admin
+    const adminProfile = await ctx.db
+      .query("userProfiles")
+      .withIndex("by_user", (q) => q.eq("userId", adminId))
+      .unique();
+    
+    if (!adminProfile || adminProfile.role !== "admin") {
+      throw new Error("Only admins can assign admin roles");
+    }
+    
+    // Get target user profile
+    const userProfile = await ctx.db
+      .query("userProfiles")
+      .withIndex("by_user", (q) => q.eq("userId", args.userId))
+      .unique();
+    
+    if (!userProfile) {
+      throw new Error("User profile not found");
+    }
+    
+    // Update user role to admin
+    await ctx.db.patch(userProfile._id, { role: "admin" });
+    return { success: true };
+  },
+});
+
 // Get user profile
 export const getUserProfile = query({
   args: {},
