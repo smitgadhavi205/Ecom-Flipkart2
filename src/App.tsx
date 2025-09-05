@@ -10,7 +10,6 @@ import { AdminDashboard } from "./components/AdminDashboard";
 import { UserProfile } from "./components/UserProfile";
 import { OrderHistory } from "./components/OrderHistory";
 import { Wishlist } from "./components/Wishlist";
-import { Helmet } from "react-helmet";
 
 export default function App() {
   const [currentView, setCurrentView] = useState<'catalog' | 'cart' | 'profile' | 'orders' | 'wishlist' | 'admin'>('catalog');
@@ -19,21 +18,9 @@ export default function App() {
   const cartTotal = useQuery(api.cart.getCartTotal);
 
   const isAdmin = userProfile?.role === 'admin';
-  const pageTitles: Record<typeof currentView, string> = {
-    catalog: "Products - ShopHub",
-    cart: "Your Cart - ShopHub",
-    profile: "Profile - ShopHub",
-    orders: "Orders - ShopHub",
-    wishlist: "Wishlist - ShopHub",
-    admin: "Admin Dashboard - ShopHub",
-  };
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
-      {/* 👇 Helmet here */}
-      <Helmet>
-        <title>{pageTitles[currentView]}</title>
-      </Helmet>
       <header className="sticky top-0 z-10 bg-white/95 backdrop-blur-sm border-b shadow-sm">
         <div className="max-w-7xl mx-auto px-4 h-16 flex justify-between items-center">
           <div className="flex items-center gap-8">
