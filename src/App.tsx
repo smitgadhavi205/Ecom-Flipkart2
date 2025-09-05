@@ -29,12 +29,15 @@ export default function App() {
     admin: "Admin Dashboard - ShopHub",
   };
 
+  const unauthTitle = "Smit's - ShopHub";
+  
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
-      {/* 👇 Helmet here */}
       <Helmet>
-        <title>{pageTitles[currentView]}</title>
-      </Helmet>
+          <title>
+            {loggedInUser ? pageTitles[currentView] : unauthTitle}
+          </title>
+        </Helmet>
       <header className="sticky top-0 z-10 bg-white/95 backdrop-blur-sm border-b shadow-sm">
         <div className="max-w-7xl mx-auto px-4 h-16 flex justify-between items-center">
           <div className="flex items-center gap-8">
