@@ -10,6 +10,7 @@ import { AdminDashboard } from "./components/AdminDashboard";
 import { UserProfile } from "./components/UserProfile";
 import { OrderHistory } from "./components/OrderHistory";
 import { Wishlist } from "./components/Wishlist";
+import { Helmet } from "react-helmet";
 
 export default function App() {
   const [currentView, setCurrentView] = useState<'catalog' | 'cart' | 'profile' | 'orders' | 'wishlist' | 'admin'>('catalog');
@@ -129,3 +130,15 @@ export default function App() {
     </div>
   );
 }
+function App() {
+  return (
+    <>
+      <Helmet>
+        <title>Smit's Shophub - Welcome</title>
+      </Helmet>
+      <h1>Hello!</h1>
+    </>
+  );
+}
+
+export default App;
